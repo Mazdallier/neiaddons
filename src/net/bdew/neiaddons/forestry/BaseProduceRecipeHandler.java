@@ -54,14 +54,14 @@ public abstract class BaseProduceRecipeHandler extends TemplateRecipeHandler {
             products = new ArrayList<LabeledPositionedStack>();
 
             int i = 0;
-            for (Entry<ItemStack, Integer> product : Utils.mergeStacks(GeneticsUtils.getProduceFromSpecies(species)).entrySet()) {
-                String label = String.format("%d%%", product.getValue());
+            for (Entry<ItemStack, Float> product : Utils.mergeStacks(GeneticsUtils.getProduceFromSpecies(species)).entrySet()) {
+                String label = String.format(product.getValue() < 0.1F ? "%.1f%%" : "%.0f%%", product.getValue() * 100);
                 products.add(new LabeledPositionedStack(product.getKey(), 96 + 22 * i++, 8, label, 10));
             }
 
             i = 0;
-            for (Entry<ItemStack, Integer> product : Utils.mergeStacks(GeneticsUtils.getSpecialtyFromSpecies(species)).entrySet()) {
-                String label = String.format("%d%%", product.getValue());
+            for (Entry<ItemStack, Float> product : Utils.mergeStacks(GeneticsUtils.getSpecialtyFromSpecies(species)).entrySet()) {
+                String label = String.format(product.getValue() < 0.1F ? "%.1f%%" : "%.0f%%", product.getValue() * 100);
                 products.add(new LabeledPositionedStack(product.getKey(), 96 + 22 * i++, 36, label, 10));
             }
         }

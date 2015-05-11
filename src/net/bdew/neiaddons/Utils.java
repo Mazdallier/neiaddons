@@ -79,15 +79,15 @@ public class Utils {
         return s1.getTagCompound().equals(s2.getTagCompound());
     }
 
-    public static Map<ItemStack, Integer> mergeStacks(Map<ItemStack, Integer> stacks) {
-        Map<ItemStack, Integer> merged = new HashMap<ItemStack, Integer>();
+    public static Map<ItemStack, Float> mergeStacks(Map<ItemStack, Float> stacks) {
+        Map<ItemStack, Float> merged = new HashMap<ItemStack, Float>();
         outer:
-        for (Entry<ItemStack, Integer> stack : stacks.entrySet()) {
+        for (Entry<ItemStack, Float> stack : stacks.entrySet()) {
             if (stack.getKey() == null) {
                 NEIAddons.logSevere("Null ItemStack in mergeStacks!");
                 continue;
             }
-            for (Entry<ItemStack, Integer> mergedStack : merged.entrySet()) {
+            for (Entry<ItemStack, Float> mergedStack : merged.entrySet()) {
                 if (isSameItem(stack.getKey(), mergedStack.getKey()) && (stack.getValue().equals(mergedStack.getValue()))) {
                     mergedStack.getKey().stackSize += 1;
                     continue outer;
@@ -98,14 +98,14 @@ public class Utils {
         return merged;
     }
 
-    public static Map<ItemStack, Integer> sanitizeDrops(Map<ItemStack, Integer> drops, String origin) {
-        Map<ItemStack, Integer> res = new HashMap<ItemStack, Integer>();
+    public static <T> Map<ItemStack, T> sanitizeDrops(Map<ItemStack, T> drops, String origin) {
+        Map<ItemStack, T> res = new HashMap<ItemStack, T>();
         boolean complained = false;
         if (drops == null) {
             NEIAddons.logWarning("%s returned null", origin);
             return res;
         }
-        for (Entry<ItemStack, Integer> ent : drops.entrySet()) {
+        for (Entry<ItemStack, T> ent : drops.entrySet()) {
             if (ent.getKey() == null || ent.getKey().getItem() == null) {
                 if (!complained) {
                     NEIAddons.logWarning("%s contains nulls and/or corrupt item stacks", origin);
@@ -116,5 +116,14 @@ public class Utils {
             res.put(ent.getKey(), ent.getValue());
         }
         return res;
+    }
+
+    public static <T> Map<T, Float> convertChancesToFloatMap(Map<T, Integer> oldMap) {
+        Map<T, Float> newMap = new HashMap<T, Float>();
+        if (oldMap == null) return newMap;
+        for (Entry<T, Integer> ent : oldMap.entrySet()) {
+            newMap.put(ent.getKey(), ent.getValue().floatValue() / 100F);
+        }
+        return newMap;
     }
 }
